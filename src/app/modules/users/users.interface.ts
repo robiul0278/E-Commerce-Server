@@ -1,7 +1,7 @@
+import { USER_ROLE } from "./users.constant";
 
 export type IUser = {
     name: string;
-    password: string;
     email: string;
     photoURL?: string;
     role?: "user" | "admin";
@@ -10,3 +10,4 @@ export type IUser = {
 
 
 
+export type TUserRole = keyof typeof USER_ROLE;
