@@ -17,3 +17,12 @@ export const roleValidationSchema = z.object({
         role: z.enum(["user", "admin"]).default("user")
     })
 });
+export const refreshTokenValidationSchema = z.object({
+    cookies: z.object({
+        refreshToken: z.string({
+            required_error: 'Refresh token is required!'
+        })
+    })
+});
+
+

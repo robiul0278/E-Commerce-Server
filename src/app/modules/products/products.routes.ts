@@ -9,4 +9,6 @@ router.post('/create',validateRequest(productValidationSchema), productControlle
 
 router.get('/', productController.getAllProduct)
 
+router.delete('/:id', productController.deleteProduct)
+
 export const productRoutes = router;

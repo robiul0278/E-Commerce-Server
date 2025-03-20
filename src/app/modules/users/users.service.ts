@@ -1,8 +1,9 @@
 import config from "../../../config";
+import AppError from "../../errors/AppError";
 import { IUser } from "./users.interface";
 import { userModel } from "./users.model";
-import jwt from "jsonwebtoken";
-
+import jwt, { JwtPayload } from "jsonwebtoken";
+import httpStatus from "http-status";
 
 const createUserDB = async (user: IUser) => {
     const result = await userModel.create(user);
@@ -42,12 +43,52 @@ const jsonWebToken = async (email: string) => {
         role: user?.role,
     }
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
         jwtPayload,
         config.jwt_secret_token as string,
-        { expiresIn: Number(config.token_expiration) },
+        { expiresIn: Number(config.jwt_secret_expiration) },
     );
-    return token;
+    const refreshToken = jwt.sign(
+        jwtPayload,
+        config.jwt_refresh_token as string,
+        { expiresIn: Number(config.jwt_refresh_expiration) },
+    );
+
+    return {accessToken, refreshToken};
+}
+
+const refreshTokenDB = async (token: string) => {
+    //! checking if the token is missing
+    if (!token) {
+        throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized!");
+      }
+  
+      //! checking if the given token is valid
+      const decoded = jwt.verify(token, config.jwt_refresh_token as string) as JwtPayload;
+  
+      const {_id } = decoded;
+  
+      //! checking if the user is exist
+      const user = await userModel.findById(_id);
+  
+      if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, "This user is not found !");
+      }
+
+          // create access token
+    const jwtPayload = {
+        _id: user?._id.toString(),
+        email: user?.email,
+        role: user?.role,
+    }
+
+    const accessToken = jwt.sign(
+        jwtPayload,
+        config.jwt_secret_token as string,
+        { expiresIn: Number(config.jwt_secret_expiration) },
+    );
+
+    return {accessToken};
 }
 
 
@@ -57,4 +98,5 @@ export const userServices = {
     getSingleUserDB,
     changeRoleDB,
     jsonWebToken,
+    refreshTokenDB,
 }

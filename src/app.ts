@@ -2,11 +2,14 @@ import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import { globalErrorHandler } from './app/middleware/globalErrorHandler';
 import router from './app/routes';
+import cookieParser from "cookie-parser";
+
 const app = express();
+app.use(cookieParser())
 
 // parsers
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
 
 app.use('/api/v1', router);
 

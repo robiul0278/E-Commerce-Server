@@ -1,10 +1,10 @@
-import { RequestHandler } from "express";
 import { userServices } from "./users.service";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
+import config from "../../../config";
 
-const createUser: RequestHandler = catchAsync(async (req, res) => {
+const createUser = catchAsync(async (req, res) => {
 
 
     const result = await userServices.createUserDB(req.body);
@@ -19,7 +19,7 @@ const createUser: RequestHandler = catchAsync(async (req, res) => {
     })
 })
 
-const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
+const getAllUsers = catchAsync(async (req, res) => {
 
     const result = await userServices.getAllUsersDB();
     // send response 
@@ -32,7 +32,7 @@ const getAllUsers: RequestHandler = catchAsync(async (req, res) => {
 
 })
 
-const getSingleUser: RequestHandler = catchAsync(async (req, res) => {
+const getSingleUser = catchAsync(async (req, res) => {
 
     const { email } = req.params;
 
@@ -46,7 +46,7 @@ const getSingleUser: RequestHandler = catchAsync(async (req, res) => {
     })
 })
 
-const changeRole: RequestHandler = catchAsync(async (req, res) => {
+const changeRole = catchAsync(async (req, res) => {
 
     const { userId } = req.params;
     const { role } = req.body;
@@ -61,13 +61,33 @@ const changeRole: RequestHandler = catchAsync(async (req, res) => {
     })
 })
 
-const jsonWebToken: RequestHandler = catchAsync(async (req, res) => {
+const jsonWebToken = catchAsync(async (req, res) => {
     const { email } = req.body;
 
-    const token = await userServices.jsonWebToken(email);
+    const result = await userServices.jsonWebToken(email);
+    const { accessToken: token ,refreshToken} = result;
+
+    res.cookie('refreshToken', refreshToken, {
+        secure: config.node_env === 'production',
+        httpOnly: true,
+    })
 
     res.send({ token });
 });
+
+const refreshToken = catchAsync(async (req, res) => {
+
+    const {refreshToken} = req.cookies
+    const result = await userServices.refreshTokenDB(refreshToken);
+
+    // send response 
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Access token is created Successfully!",
+        data: result,
+    })
+})
 
 
 export const userController = {
@@ -76,4 +96,5 @@ export const userController = {
     getSingleUser,
     changeRole,
     jsonWebToken,
+    refreshToken,
 }

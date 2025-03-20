@@ -1,7 +1,7 @@
 import express from "express";
 import { userController } from "./users.controller";
 import validateRequest from "../../middleware/validateRequest";
-import { roleValidationSchema, userValidationSchema } from "./users.validation";
+import { refreshTokenValidationSchema, roleValidationSchema, userValidationSchema } from "./users.validation";
 import authGard from "../../middleware/authGard";
 import { USER_ROLE } from "./users.constant";
 
@@ -17,5 +17,7 @@ router.get('/:email', authGard(USER_ROLE.admin, USER_ROLE.user), userController.
 router.patch('/role/:userId', validateRequest(roleValidationSchema), userController.changeRole);
 
 router.post('/jsonwebtoken', userController.jsonWebToken);
+
+router.post('/refresh-token', validateRequest(refreshTokenValidationSchema) , userController.refreshToken);
 
 export const userRoutes = router;
