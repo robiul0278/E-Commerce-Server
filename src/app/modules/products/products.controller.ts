@@ -6,7 +6,6 @@ import httpStatus from "http-status";
 
 const createProduct = catchAsync(async (req, res) => {
     const product = req.body
-    console.log(product);
     const result = await productServices.createProductDB(product);
 
     sendResponse(res, {
@@ -39,10 +38,27 @@ const deleteProduct = catchAsync(async (req, res) => {
         data: result,
     })
 })
+const updateProduct = catchAsync(async (req, res) => {
+
+    const {options} = req.body;
+    const {id} = req.params;
+
+    const result = await productServices.updateProductFromDB(options, id);
+
+    console.log(result);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Product is update Successfully!",
+        data: result,
+    }) 
+})
 
 
 export const productController = {
     createProduct,
     getAllProduct,
     deleteProduct,
+    updateProduct,
 }

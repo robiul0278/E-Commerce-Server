@@ -2,9 +2,13 @@ import AppError from "../../errors/AppError";
 import { TFlashData, TUpdateFlashData } from "./flashSale.interface";
 import { flashSaleModel } from "./flashSale.model";
 import httpStatus from "http-status";
-import { ObjectId } from "mongodb";
+import { ObjectId} from "mongodb";
 
 const createFlashSaleDB = async (product: TFlashData) => {
+
+    console.log(product);
+
+
     const existName = product.name;
 
     const existingFlashSale = await flashSaleModel.findOne({ name: existName });
@@ -72,6 +76,16 @@ const addProductFlashSaleDB = async (productId: string, userRole: string) => {
     return result;
 }
 
+const removeProductFlashSaleDB = async (id: string) => {
+    const productId = new ObjectId(id);
+
+    const result = await flashSaleModel.updateOne(
+        {$pull: {products: productId}}
+    )
+
+    return result;
+}
+
 
 
 
@@ -79,6 +93,7 @@ export const FlashSaleServices = {
     createFlashSaleDB,
     updateFlashSaleDB,
     getAllFlashSaleDB,
-    addProductFlashSaleDB
+    addProductFlashSaleDB,
+    removeProductFlashSaleDB,
 }
 

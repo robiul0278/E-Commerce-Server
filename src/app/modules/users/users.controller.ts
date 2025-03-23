@@ -48,15 +48,29 @@ const getSingleUser = catchAsync(async (req, res) => {
 
 const changeRole = catchAsync(async (req, res) => {
 
-    const { userId } = req.params;
-    const { role } = req.body;
+    const { id } = req.params;
+    const  {role}  = req.body;
 
-    const result = await userServices.changeRoleDB(userId, role);
+    const result = await userServices.changeRoleDB(id, role);
+
     // send response 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "Role Change Successfully!",
+        data: result,
+    })
+})
+const deleteUser = catchAsync(async (req, res) => {
+
+    const { id } = req.params;
+    const result = await userServices.deleteUserFromDB(id);
+
+    // send response 
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Delete User Successfully!",
         data: result,
     })
 })
@@ -95,6 +109,7 @@ export const userController = {
     getAllUsers,
     getSingleUser,
     changeRole,
+    deleteUser,
     jsonWebToken,
     refreshToken,
 }

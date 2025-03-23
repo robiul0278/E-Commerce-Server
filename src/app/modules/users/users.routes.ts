@@ -14,7 +14,9 @@ router.get('/', userController.getAllUsers);
 
 router.get('/:email', authGard(USER_ROLE.admin, USER_ROLE.user), userController.getSingleUser);
 
-router.patch('/role/:userId', validateRequest(roleValidationSchema), userController.changeRole);
+router.patch('/role/:id',authGard(USER_ROLE.admin), validateRequest(roleValidationSchema), userController.changeRole);
+
+router.delete('/delete/:id',authGard(USER_ROLE.admin), userController.deleteUser);
 
 router.post('/jsonwebtoken', userController.jsonWebToken);
 

@@ -18,12 +18,16 @@ const getAllUsersDB = async () => {
 const getSingleUserDB = async (email: string) => {
     const result = await userModel.findOne({ email })
     return result;
-}
+};
 
-const changeRoleDB = async (userId: string, role: string) => {
+const deleteUserFromDB = async (id: string) => {
+    const result = await userModel.deleteOne({ _id: id });
+    return result;
+};
 
+const changeRoleDB = async (id: string, role: string) => {
     const result = await userModel.findByIdAndUpdate(
-        { _id: userId },
+        { _id: id },
         { $set: { role } },
         { new: true }
     )
@@ -97,6 +101,7 @@ export const userServices = {
     getAllUsersDB,
     getSingleUserDB,
     changeRoleDB,
+    deleteUserFromDB,
     jsonWebToken,
     refreshTokenDB,
 }

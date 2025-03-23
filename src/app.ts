@@ -9,7 +9,16 @@ app.use(cookieParser())
 
 // parsers
 app.use(express.json());
-app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
+// app.use(cors({ origin: ['http://localhost:5173'], credentials: true }));
+const corsOptions = {
+  origin: '*', // Change this to your frontend URL instead of '*'
+
+  // origin: 'https://add-your-todo-today.netlify.app',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+};
+
+app.use(cors(corsOptions));
 
 app.use('/api/v1', router);
 

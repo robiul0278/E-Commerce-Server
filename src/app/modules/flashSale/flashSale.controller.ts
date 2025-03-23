@@ -6,6 +6,9 @@ import { FlashSaleServices } from "./flashSale.service";
 const createFlashSale = catchAsync(async (req, res) => {
     const product = req.body;
 
+    console.log(product);
+
+
     const result = await FlashSaleServices.createFlashSaleDB(product);
 
     sendResponse(res, {
@@ -59,10 +62,23 @@ const addProductToFlashSale = catchAsync(async (req, res) => {
         data: result,
     })
 })
+const removeProductToFlashSale = catchAsync(async (req, res) => {
+
+    const {id} = req.params;
+    const result = await FlashSaleServices.removeProductFlashSaleDB(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Product Remove successfully!",
+        data: result,
+    })
+})
 
 export const flashSaleController = {
     createFlashSale,
     updateFlashSale,
     getAllFlashSale,
     addProductToFlashSale,
+    removeProductToFlashSale,
 }

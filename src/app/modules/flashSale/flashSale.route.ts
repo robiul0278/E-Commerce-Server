@@ -12,5 +12,6 @@ router.patch('/update',validateRequest(TUpdateFlashValidationSchema), flashSaleC
 router.get('/', flashSaleController.getAllFlashSale)
 
 router.patch('/add-product', flashSaleController.addProductToFlashSale)
+router.delete('/remove/:id', flashSaleController.removeProductToFlashSale)
 
 export const flashSaleRoutes = router;
