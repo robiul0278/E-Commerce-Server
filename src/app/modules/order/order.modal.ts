@@ -27,12 +27,12 @@ const OrderSchema = new Schema<TOrderData>(
         userId: { type: String, required: true },
         status: {
             type: String,
-            enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
+            enum: ["processing", "shipped", "delivered", "cancelled"],
             default: "Processing"
         },
         payment: {
             type: String,
-            enum: ["Pending", "Success"],
+            enum: ["pending", "success"],
         },
     },
     { timestamps: true }

@@ -5,8 +5,9 @@ import { orderServices } from "./order.service";
 
 const createOrder = catchAsync(async (req, res) => {
     const {options} = req.body
-    console.log(options);
     const result = await orderServices.createOrderDB(options);
+
+    console.log(result);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -17,7 +18,7 @@ const createOrder = catchAsync(async (req, res) => {
 })
 const getAllOrder = catchAsync(async (req, res) => {
 
-    const result = await orderServices.getAllOrderDB();
+    const result = await orderServices.getAllOrderDB(req.query);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -27,7 +28,24 @@ const getAllOrder = catchAsync(async (req, res) => {
     })
 })
 
+const changeOrderStatus = catchAsync(async (req, res) => {
+
+    const { id } = req.params;
+    const  {status}  = req.body;
+
+    const result = await orderServices.changeOrderStatusDB(id, status);
+
+    // send response npm 
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Status Change Successfully!",
+        data: result,
+    })
+})
+
 export const orderController = {
     createOrder,
     getAllOrder,
+    changeOrderStatus,
 }

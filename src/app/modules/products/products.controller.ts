@@ -1,4 +1,3 @@
-import { RequestHandler } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { productServices } from "./products.service";
@@ -26,6 +25,20 @@ const getAllProduct = catchAsync(async (req, res) => {
         data: result,
     })
 })
+
+const getSingleProduct = catchAsync(async (req, res) => {
+
+    const {id} = req.params;
+    const result = await productServices.singleProductFromDB(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Single Product is retrieved Successfully!",
+        data: result,
+    })
+});
+
 const deleteProduct = catchAsync(async (req, res) => {
 
     const {id} = req.params;
@@ -45,8 +58,6 @@ const updateProduct = catchAsync(async (req, res) => {
 
     const result = await productServices.updateProductFromDB(options, id);
 
-    console.log(result);
-
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -59,6 +70,7 @@ const updateProduct = catchAsync(async (req, res) => {
 export const productController = {
     createProduct,
     getAllProduct,
+    getSingleProduct,
     deleteProduct,
     updateProduct,
 }

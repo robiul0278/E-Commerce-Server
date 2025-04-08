@@ -25,14 +25,18 @@ class QueryBuilder<T> {
     return this;
   }
 
-
   filter() {
     const queryObj = { ...this.query }; // copy
 
     // Filtering
-    const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+    const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields', 'orderNumber', 'email', 'name',];
 
     excludeFields.forEach((el) => delete queryObj[el]);
+
+    // Remove empty or undefined filters
+    ['status', 'category','subCategory','brand' ].forEach(field => {
+      if (!queryObj[field]) delete queryObj[field];
+    });
 
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
 
@@ -41,15 +45,15 @@ class QueryBuilder<T> {
 
   sort() {
     let sortField = '-createdAt'; // Default sorting by latest created
-    if (this.query.sort) {
-        const sortOrder = this.query.sort === 'asc' ? '' : '-';
-        sortField = `${sortOrder}price`; // Sorting by price if provided
+    if (this?.query?.sort) {
+      const sortOrder = this.query.sort === 'asc' ? '' : '-';
+      sortField = `${sortOrder}price`; // Sorting by price if provided
     }
 
     this.modelQuery = this.modelQuery.sort(sortField);
 
     return this;
-}
+  }
 
 
 

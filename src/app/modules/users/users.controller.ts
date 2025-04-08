@@ -21,7 +21,9 @@ const createUser = catchAsync(async (req, res) => {
 
 const getAllUsers = catchAsync(async (req, res) => {
 
-    const result = await userServices.getAllUsersDB();
+    console.log(req.query);
+
+    const result = await userServices.getAllUsersDB(req.query);
     // send response 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -61,6 +63,7 @@ const changeRole = catchAsync(async (req, res) => {
         data: result,
     })
 })
+
 const deleteUser = catchAsync(async (req, res) => {
 
     const { id } = req.params;

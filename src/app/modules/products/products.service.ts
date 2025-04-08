@@ -13,9 +13,9 @@ const createProductDB = async (product: TProductSchema) => {
 
 const allProductsFromDB = async (query: Record<string, unknown>) => {
 
-    // console.log(query);
+    console.log(query);
 
-    const searchableField = ['name',]
+    const searchableField = ['name']
     // console.log(query);
 
     const productQuery = new QueryBuilder(
@@ -36,6 +36,13 @@ const allProductsFromDB = async (query: Record<string, unknown>) => {
 
 };
 
+const singleProductFromDB = async (id: string) => {
+    const objectId = new ObjectId(id);
+
+    const result = await productModel.findOne({_id: objectId})
+    return result;
+}
+
 const deleteProductFromDB = async (id:string) => {
     const objectId = new ObjectId(id);
 
@@ -46,7 +53,7 @@ const deleteProductFromDB = async (id:string) => {
 
 const updateProductFromDB = async (options: TUpdateProductSchema, id: string) => {
 
-    const {name, price, brand, category, sub_category, stock, image, description} = options;
+    const {name, price, brand, category, subCategory, stock, image, description} = options;
     const product = await productModel.findOne({_id: id});
 
     if (!product) {
@@ -55,7 +62,8 @@ const updateProductFromDB = async (options: TUpdateProductSchema, id: string) =>
 
     const result = await productModel.updateOne(
         {_id: id},
-        {$set: {name, price, brand, category, sub_category, stock, image, description}}
+        {$set: {name, price, brand, category, subCategory, stock, image, description}},
+        { returnDocument: "after" }
     )
     return result;
 }
@@ -63,6 +71,7 @@ const updateProductFromDB = async (options: TUpdateProductSchema, id: string) =>
 export const productServices = {
     createProductDB,
     allProductsFromDB,
+    singleProductFromDB,
     deleteProductFromDB,
     updateProductFromDB
 }

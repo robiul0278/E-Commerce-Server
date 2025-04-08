@@ -4,16 +4,36 @@ import { IUser } from "./users.interface";
 import { userModel } from "./users.model";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import httpStatus from "http-status";
+import QueryBuilder from "../../../helpers/QueryBuilder";
 
 const createUserDB = async (user: IUser) => {
     const result = await userModel.create(user);
     return result;
 }
 
-const getAllUsersDB = async () => {
-    const result = await userModel.find()
-    return result;
-}
+
+const getAllUsersDB = async (query: Record<string, unknown>) => {
+
+    const searchableField = ['name', 'email']
+    // console.log(query);
+
+    const userQuery = new QueryBuilder(
+        userModel.find(), query)
+        .search(searchableField)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+
+    const result = await userQuery.modelQuery;
+    const meta = await userQuery.countTotal()
+
+    return {
+        meta,
+        result
+    };
+
+};
 
 const getSingleUserDB = async (email: string) => {
     const result = await userModel.findOne({ email })

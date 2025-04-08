@@ -33,11 +33,10 @@ const updateFlashSale = catchAsync(async (req, res) => {
     })
 })
 const getAllFlashSale = catchAsync(async (req, res) => {
-    const query = req.query;
 
-    console.log(query);
+    console.log(req.query);
     
-    const result = await FlashSaleServices.getAllFlashSaleDB(query);
+    const result = await FlashSaleServices.getAllFlashSaleDB(req.query);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -46,14 +45,26 @@ const getAllFlashSale = catchAsync(async (req, res) => {
         data: result,
     })
 })
+const getSingleFlashSale = catchAsync(async (req, res) => {
+
+    const { id } = req.params;
+    
+    const result = await FlashSaleServices.getSingleFlashSaleDB(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Single data retrieved successfully!",
+        data: result,
+    })
+})
 
 const addProductToFlashSale = catchAsync(async (req, res) => {
 
-    console.log(req.body);
+    const { id } = req.params;
+    const {flashId} = req.body;
 
-    const { productId, userRole } = req.body;
-
-    const result = await FlashSaleServices.addProductFlashSaleDB(productId, userRole);
+    const result = await FlashSaleServices.addProductFlashSaleDB(id, flashId);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -79,6 +90,7 @@ export const flashSaleController = {
     createFlashSale,
     updateFlashSale,
     getAllFlashSale,
+    getSingleFlashSale,
     addProductToFlashSale,
     removeProductToFlashSale,
 }

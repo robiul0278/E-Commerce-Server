@@ -9,6 +9,7 @@ router.post('/create',validateRequest(productValidationSchema), productControlle
 router.patch('/update/:id',validateRequest(updateProductValidationSchema), productController.updateProduct)
 
 router.get('/', productController.getAllProduct)
+router.get('/view/:id', productController.getSingleProduct)
 
 router.delete('/:id', productController.deleteProduct)
 
